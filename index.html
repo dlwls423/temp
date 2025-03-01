@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Googel 検索</title>
+    <style>
+      /* 기본 스타일 */
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background: #ffffff;
+        font-family: Arial, sans-serif;
+        margin: 0;
+      }
+
+      .main {
+        width: 100%;
+        max-width: 500px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        background-color: linear-gradient(180deg, #f8f9fa, #ffffff);
+        border-radius: 0; /* 모서리 둥글게 없앰 */
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 헤더 스타일 */
+      .header {
+        position: sticky;
+        top: 10px;
+        margin-left: auto;
+        margin-right: 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 14px;
+        color: #5f6368;
+      }
+      .header img.icon,
+      .header img.profile {
+        opacity: 0.6;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+      .header img.icon {
+        width: 21px;
+        height: 21px;
+      }
+      .header img.icon:hover {
+        transform: rotate(15deg);
+      }
+      .header img.profile {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .header img.profile:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* 점 메뉴 스타일 */
+      .header .menu .dots {
+        width: 3.5px;
+        height: 3.5px;
+        background-color: #5f6368;
+        border-radius: 50%;
+        margin: 2px 0;
+      }
+
+      /* 로고 스타일 */
+      .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 170px;
+        margin-bottom: 50px;
+        opacity: 0;
+        animation: fadeIn 1s ease-in forwards;
+      }
+      .logo {
+        font-size: 70px;
+        font-weight: bold;
+        font-family: "Product Sans", Arial, sans-serif;
+        background: linear-gradient(to right, #4285f4, #9b51e0, #e91e63);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        padding: 10px 20px;
+        border-radius: 10px;
+        transition: transform 0.3s ease-in-out;
+      }
+      .logo:hover {
+        transform: scale(1.1) rotate(-2deg);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 검색창 스타일 */
+      .search-container {
+        display: flex;
+        align-items: center;
+        width: 95%; /* 부모 div에 딱 맞춤 */
+        max-width: 500px; /* 너무 커지지 않도록 제한 */
+        background: #ffffff;
+        padding: 6px;
+        border-radius: 30px;
+        border: 1px solid #dfe1e5;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1;
+        margin: 0 auto; /* 부모 요소에서 중앙 정렬 */
+        box-sizing: border-box; /* 패딩과 테두리 포함 */
+      }
+
+      input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        outline: none;
+        font-size: 18px;
+        background: transparent;
+        min-width: 50px;
+      }
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        background-color: #4285f4;
+        color: white;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s ease, transform 0.1s ease-in-out;
+        white-space: nowrap;
+        min-width: 80px;
+      }
+
+      button:hover {
+        background-color: #357ae8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="header">
+        <span>Gomail</span>
+        <span>Image</span>
+        <img
+          alt="通知アイコン"
+          class="icon"
+          src="bell_icon_transparent_final.png"
+        />
+        <div class="menu">
+          <div class="dots"></div>
+          <div class="dots"></div>
+          <div class="dots"></div>
+        </div>
+        <img
+          alt="プロフィール"
+          class="profile"
+          src="profile_icon_transparent.png"
+        />
+      </div>
+      <div class="logo-container">
+        <div class="logo">Googel</div>
+      </div>
+      <div class="search-container">
+        <input
+          id="searchInput"
+          onkeyup="updateSearchHistory()"
+          placeholder="Search or enter URL"
+          type="text"
+        />
+        <button onclick="search()">Search</button>
+        <div id="searchHistory" class="search-history"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    // 검색 버튼 클릭 시 실행되는 함수
+    function search() {
+      window.location.href = "search_log.html";
+    }
+
+    // 엔터 키 입력 시에도 검색이 실행되도록 처리
+    document
+      .getElementById("searchInput")
+      .addEventListener("focus", function () {
+        search();
+      });
+  </script>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Googel 検索</title>
+    <style>
+      /* 기본 스타일 */
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background: #ffffff;
+        font-family: Arial, sans-serif;
+        margin: 0;
+      }
+
+      .main {
+        width: 100%;
+        max-width: 500px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        background-color: linear-gradient(180deg, #f8f9fa, #ffffff);
+        border-radius: 0; /* 모서리 둥글게 없앰 */
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 검색창 스타일 */
+      .search-container {
+        display: flex;
+        align-items: center;
+        width: 100%; /* 부모 div에 딱 맞춤 */
+        max-width: 500px; /* 너무 커지지 않도록 제한 */
+        background: #ffffff;
+        padding: 6px;
+        border: none;
+        border-bottom: 2px solid #dfe1e5;
+        position: relative;
+        z-index: 1;
+        box-sizing: border-box; /* 패딩과 테두리 포함 */
+      }
+
+      input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        outline: none;
+        font-size: 18px;
+        background: transparent;
+        min-width: 50px;
+      }
+
+      .search-button {
+        background-color: #4285f4;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+      }
+
+      .search-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .search-button:hover {
+        background-color: #357ae8;
+      }
+
+      /* 자동완성 스타일 */
+      .search-history {
+        visibility: hidden;
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        overflow-y: auto;
+        background: #ffffff;
+        z-index: 2;
+        margin-top: 5px;
+        left: 0;
+      }
+      .search-history div {
+        padding: 8px;
+        margin-bottom: 8px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .search-history div:hover {
+        background-color: #e0e0e0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="search-container">
+        <input
+          id="searchInput"
+          onkeyup="updateSearchHistory()"
+          placeholder="Search or enter URL"
+          type="text"
+        />
+        <button onclick="search()" class="search-button">
+          <img src="search.png" alt="Search" class="search-icon" />
+        </button>
+        <div id="searchHistory" class="search-history"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const searchTerms = [
+      "I",
+      "Instagram",
+      "Internet speed test",
+      "Intellij",
+      "Icloud",
+      "Ip",
+      "Ipwork",
+      "Iridescen",
+      "It",
+      "iTunes",
+      "It passport",
+      "Its",
+      "Itp",
+      "Item",
+      "Italy",
+      "Itinerary",
+      "Its",
+      "Itslearning",
+      "Itsy Bitsy",
+      "ItsLit ",
+      "Itsmestore",
+      "ItsTime",
+      "Itsu",
+      "Itsup",
+      "Itsuseful",
+      "Itsunknown",
+      "Itsunusual",
+      "Itsuk",
+      "Itsuknown",
+      "Itsukind",
+      "Itsuki",
+      "Itsuki meaning",
+      "Itsuki shrine",
+      "itsuki kaito",
+      "itsuki Nozomi",
+      "Itsuki K",
+      "Itsuki Katayama",
+      "Itsuki kurosawa",
+      "Itsuki Kagami",
+      "Itsuki Kamizaki",
+      "Itsuki Ka",
+      "Itsuki Kawabata",
+      "Itsuki Kagami",
+      "Itsuki Kaz",
+      "Itsuki Kazuhiro",
+      "Itsuki Kaza",
+      "Itsuki kazahara",
+      "Itsuki Kazam",
+      "Itsuki kazama",
+    ];
+
+    function updateSearchHistory() {
+      const searchInput = document
+        .getElementById("searchInput")
+        .value.trim()
+        .toLowerCase();
+      const historyContainer = document.getElementById("searchHistory");
+      const searchContainer = document.querySelector(".search-container");
+
+      if (searchInput === "") {
+        historyContainer.innerHTML = "";
+        historyContainer.style.visibility = "hidden";
+        searchContainer.classList.remove("no-shadow");
+        return;
+      }
+      const customSearchMap = {
+        I: [
+          "I",
+          "Instagram",
+          "Internet speed test",
+          "Intellij",
+          "Icloud",
+          "Ip",
+          "Ipwork",
+          "Iridescen",
+        ],
+        It: [
+          "It",
+          "iTunes",
+          "It passport",
+          "Its",
+          "Itp",
+          "Item",
+          "Italy",
+          "Itinerary",
+        ],
+        Its: [
+          "Its",
+          "Itslearning",
+          "Itsy Bitsy",
+          "ItsLit ",
+          "Itsmestore",
+          "ItsTime",
+        ],
+        Itsu: ["Itsu", "Itsup", "Itsuseful", "Itsunknown", "Itsunusual"],
+        Itsuk: ["Itsuk", "Itsuknown", "Itsukind"],
+        Itsuki: [
+          "Itsuki",
+          "Itsuki meaning",
+          "Itsuki shrine",
+          "itsuki kaito",
+          "itsuki Nozomi",
+        ],
+        "Itsuki K": [
+          "Itsuki K",
+          "Itsuki Katayama",
+          "Itsuki kurosawa",
+          "Itsuki Kagami",
+          "Itsuki Kamizaki",
+        ],
+        "Itsuki Ka": [
+          "Itsuki Ka",
+          "Itsuki Katayama",
+          "Itsuki Kawabata",
+          "Itsuki Kagami",
+          "Itsuki Kamizaki",
+        ],
+        "Itsuki Kaz": [
+          "Itsuki Kaz",
+          "Itsuki Kazuhiro",
+          "Itsuki Kazahara",
+          "Itsuki Kazama",
+        ],
+        "Itsuki Kaza": ["Itsuki Kaza", "Itsuki kazahara", "Itsuki Kazama"],
+        "Itsuki Kazam": ["Itsuki Kazam", "Itsuki kazama"],
+        "Itsuki Kazama": ["Itsuki Kazama"],
+      };
+
+      let filteredHistory = [];
+
+      // **사용자 입력이 설정된 키에 존재하면 해당 리스트를 가져옴**
+      if (customSearchMap[searchInput]) {
+        filteredHistory = customSearchMap[searchInput];
+      } else {
+        // **만약 지정된 값이 없으면 기존 검색어 필터링 방식 적용**
+        const startsWithMatches = searchTerms.filter((term) =>
+          term.toLowerCase().startsWith(searchInput)
+        );
+        const includesMatches = searchTerms.filter(
+          (term) =>
+            term.toLowerCase().includes(searchInput) &&
+            !startsWithMatches.includes(term)
+        );
+        filteredHistory = [...startsWithMatches, ...includesMatches].slice(
+          0,
+          8
+        );
+      }
+
+      // **검색 결과 표시**
+      historyContainer.innerHTML = "";
+      if (filteredHistory.length > 0) {
+        historyContainer.style.visibility = "visible";
+        filteredHistory.forEach((term, index) => {
+          const searchItem = document.createElement("div");
+          searchItem.textContent = term;
+          searchItem.onclick = () => {
+            document.getElementById("searchInput").value = term;
+            search();
+          };
+          historyContainer.appendChild(searchItem);
+
+          // 실선 추가
+          if (index < filteredHistory.length - 1) {
+            const separator = document.createElement("hr");
+            separator.style.border = "0"; // 기본 테두리 없애기
+            separator.style.borderTop = "1px solid #ccc"; // 얇은 실선
+            historyContainer.appendChild(separator);
+          }
+        });
+        searchContainer.classList.add("no-shadow");
+      } else {
+        historyContainer.style.visibility = "hidden";
+        searchContainer.classList.remove("no-shadow");
+      }
+    }
+
+    // 검색 버튼 클릭 시 실행되는 함수
+    function search() {
+      const searchInput = document.getElementById("searchInput").value.trim();
+      if (searchInput) {
+        // 검색 실행 (예: result.html로 이동)
+        window.location.href =
+          "result.html?query=" + encodeURIComponent(searchInput);
+      }
+    }
+
+    // 엔터 키 입력 시에도 검색이 실행되도록 처리
+    document
+      .getElementById("searchInput")
+      .addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          search();
+        }
+      });
+  </script>
+</html>
