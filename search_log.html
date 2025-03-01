@@ -97,6 +97,16 @@
       .search-history div:hover {
         background-color: #e0e0e0;
       }
+      .search-item {
+        gap: 10px;
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .search-item-image {
+        width: 20px;
+        height: 20px;
+      }
     </style>
   </head>
   <body>
@@ -272,11 +282,28 @@
         historyContainer.style.visibility = "visible";
         filteredHistory.forEach((term, index) => {
           const searchItem = document.createElement("div");
-          searchItem.textContent = term;
+          searchItem.classList.add("search-item");
+
+          // 이미지 요소 생성
+          const image = document.createElement("img");
+          image.src = "log.png"; // 이미지 경로 (이미지 파일로 교체)
+          image.alt = "Search Icon"; // 이미지의 alt 텍스트
+          image.classList.add("search-item-image"); // 이미지에 스타일 적용
+
+          // 텍스트 항목 생성
+          const text = document.createElement("span");
+          text.textContent = term;
+
+          // 클릭 이벤트 설정
           searchItem.onclick = () => {
             document.getElementById("searchInput").value = term;
             search();
           };
+
+          // 이미지와 텍스트를 검색 항목에 추가
+          searchItem.appendChild(image);
+          searchItem.appendChild(text);
+
           historyContainer.appendChild(searchItem);
 
           // 실선 추가
